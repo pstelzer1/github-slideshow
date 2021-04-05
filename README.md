@@ -14,4 +14,4 @@ This course is using the :sparkles: open source project [reveal.js](https://gith
  
 Comment from pstelzer1: I can't wait either!
 Comment also from pstelzer1: I was requested to change this file. 
-
+Update from a commit to the DEVELOP branch
