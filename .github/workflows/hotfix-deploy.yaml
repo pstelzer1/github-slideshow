@@ -32,6 +32,7 @@ jobs:
           source_ref: ${{ needs.buildHotFix.outputs.currentBranch }}
           target_branch: 'DEVELOP'
           commit_message_template: 'Automatically merged ${{ needs.buildHotFix.outputs.currentBranch }} into DEVELOP branch.'
+        continue-on-error: true
       - name: failureEmail
         if: steps.merge.outcome != 'success'
         run: |
