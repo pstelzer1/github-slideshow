@@ -1,0 +1,37 @@
+name: hotfixDeploy
+on:
+  push:
+    branches:
+      HOTFIX*
+# Environment variables available to all jobs and steps in this workflow
+
+jobs:
+  buildHotfix:
+    runs-on: ubuntu-latest
+    outputs:
+      stageImage: ${{ steps.setStgImage.outputs.stgImageId }}
+      currentBranch: ${{ steps.setCurrentBranch.outputs.currentBranch }}
+    steps:
+      - name: echo current branch
+        run: echo running on branch ${GITHUB_REF##*/}
+      - uses: actions/checkout@main
+        # by default, the branch that is checked out is the one that triggered the workflow
+      - id: setStgImage
+        run: echo "::set-output name=stgImageId::${{ env.SHA1_SHORT }}"
+      - id: setCurrentBranch
+        run: echo "::set-output name=currentBranch::${GITHUB_REF##*/}"
+  mergeToDev:
+    needs: [buildHotfix]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: everlytic/branch-merge@1.1.0
+        with:
+          github_token: ${{ github.token }}
+          source_ref: ${{ needs.buildHotFix.outputs.currentBranch }}
+          target_branch: 'DEVELOP'
+          commit_message_template: 'Automatically merged ${{ needs.buildHotFix.outputs.currentBranch }} into DEVELOP branch.'
+      - name: sendEmail
+        run: |
+          dt=$(date -Iseconds)
+          curl  -H "aeg-sas-key: ${{ secrets.EVENTGRID_KEY_DEV }}" https://ccappresourcegridtopic.centralus-1.eventgrid.azure.net/api/events -d  '[{ "id": "1807","eventType": "CCAppAPIAppDeployed", "subject": "mergedtodev", "eventTime": "'$dt'", "data": { "recipient": "pstelzer@1fbusa.com", "message": "A hotfix for the slideshow application, which originates from the ${{ needs.buildHotFix.outputs.currentBranch }} branch, has been merged to the DEVELOP branch.", subject: "Slideshow: Notification of push to the hotfix branch" }, "dataVersion": "1.0", "metadataVersion": "1", "topic": "/subscriptions/b1119df2-99de-496c-a697-e99714162e88/resourceGroups/ccappEventGridResourceGroup/providers/Microsoft.EventGrid/topics/ccappResourceGridTopic" }]'
