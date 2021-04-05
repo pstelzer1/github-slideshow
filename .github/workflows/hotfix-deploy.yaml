@@ -37,7 +37,7 @@ jobs:
         if: steps.merge.outcome != 'success'
         run: |
           dt=$(date -Iseconds)
-          curl  -H "aeg-sas-key: ${{ secrets.EVENTGRID_KEY_DEV }}" https://ccappresourcegridtopic.centralus-1.eventgrid.azure.net/api/events -d  '[{ "id": "1807","eventType": "MergeError", "subject": "mergeerror", "eventTime": "'$dt'", "data": { "recipient": "pstelzer@1fbusa.com", "message": "A hotfix for the slideshow application, which originates from the ${{ needs.buildHotFix.outputs.currentBranch }} branch, has encountered a conflice when merging to the DEVELOP branch.", subject: "Slideshow: Notification of merge failure to DEVELOP" }, "dataVersion": "1.0", "metadataVersion": "1", "topic": "/subscriptions/b1119df2-99de-496c-a697-e99714162e88/resourceGroups/ccappEventGridResourceGroup/providers/Microsoft.EventGrid/topics/ccappResourceGridTopic" }]
+          curl  -H "aeg-sas-key: ${{ secrets.EVENTGRID_KEY_DEV }}" https://ccappresourcegridtopic.centralus-1.eventgrid.azure.net/api/events -d  '[{ "id": "1807","eventType": "MergeError", "subject": "mergeerror", "eventTime": "'$dt'", "data": { "recipient": "pstelzer@1fbusa.com", "message": "A hotfix for the slideshow application, which originates from the ${{ needs.buildHotFix.outputs.currentBranch }} branch, has encountered a conflict when merging to the DEVELOP branch.", subject: "Slideshow: Notification of merge failure to DEVELOP" }, "dataVersion": "1.0", "metadataVersion": "1", "topic": "/subscriptions/b1119df2-99de-496c-a697-e99714162e88/resourceGroups/ccappEventGridResourceGroup/providers/Microsoft.EventGrid/topics/ccappResourceGridTopic" }]'
       - name: sendEmail
         if: steps.merge.outcome == 'success'
         run: |
