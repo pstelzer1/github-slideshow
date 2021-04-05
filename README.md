@@ -16,3 +16,4 @@ Comment from pstelzer1: I can't wait either!
 Comment also from pstelzer1: I was requested to change this file. 
 Some comment designed to create a conflict.
 Update from a commit to the DEVELOP branch
+Conflict conflict conflict.
