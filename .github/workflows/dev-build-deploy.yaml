@@ -1,0 +1,14 @@
+name: devDeployCCApp
+  
+on:
+  push:
+    branches:
+      DEVELOP
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: echo the  'from' branch
+      run: echo "${{ github.head_ref }}"
+    - name: echo the 'to' branch
+      run: echo "${{ github.base_ref }}"
